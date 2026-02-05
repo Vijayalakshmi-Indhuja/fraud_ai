@@ -1,142 +1,138 @@
-\# 🛡️ Agentic Honey-Pot for Scam Detection \& Intelligence Extraction
+# 🛡️ Agentic Honey-Pot for Scam Detection & Intelligence Extraction
 
-
-
-An AI-powered honeypot API that detects scam messages and autonomously engages scammers to extract actionable intelligence.
-
-
+An AI-powered honeypot API that detects scam messages and autonomously engages scammers to extract actionable intelligence such as bank accounts, UPI IDs, and phishing URLs.
 
 ---
 
+## 🚀 Built Using
 
-
-\## 🏗 Built Using
-
-
-
-\- FastAPI
-
-\- Google Gemini API
-
-\- Python
-
-\- Regex Intelligence Extraction
-
-\- Multi-turn Conversation Memory
-
-
+- FastAPI
+- Google Gemini API
+- Python
+- Regex-based Intelligence Extraction
+- Multi-turn Conversation Memory
 
 ---
 
+## ✨ Features
 
-
-\## 🚀 Features
-
-
-
-✅ Scam Detection  
-
-✅ Autonomous AI Agent Engagement  
-
-✅ Intelligence Extraction (Bank, UPI, URLs)  
-
-✅ Engagement Metrics Tracking  
-
-✅ Structured JSON API Response  
-
-✅ Production-ready FastAPI deployment  
-
-
+- ✅ Scam Detection
+- ✅ Autonomous AI Agent Engagement
+- ✅ Intelligence Extraction (Bank Accounts, UPI IDs, URLs)
+- ✅ Engagement Metrics Tracking
+- ✅ Structured JSON API Response
+- ✅ Production-ready FastAPI deployment
 
 ---
 
+## 📡 API Endpoint
 
+### POST `/analyze`
 
-\## 📡 API Endpoint
+---
 
-
-
-\*\*POST\*\* `/analyze`
-
-
-
-\### 🔹 Request Body
-
-
+### 🔹 Request Body
 
 ```json
-
 {
-
-&nbsp; "message": "Your bank account is blocked. Click here to verify."
-
+  "message": "Your bank account is blocked. Click here to verify."
 }
+```
 
-🔹 Response Structure
+---
 
+### 🔹 Response Structure
+
+```json
 {
-
-&nbsp; "scam\_detection": {
-
-&nbsp;   "is\_scam": true,
-
-&nbsp;   "confidence": 99,
-
-&nbsp;   "reason": "Explanation..."
-
-&nbsp; },
-
-&nbsp; "engagement\_metrics": {
-
-&nbsp;   "turns": 2,
-
-&nbsp;   "duration\_seconds": 5
-
-&nbsp; },
-
-&nbsp; "agent\_reply": "Human-like reply to scammer",
-
-&nbsp; "extracted\_intelligence": {
-
-&nbsp;   "bank\_accounts": \[],
-
-&nbsp;   "upi\_ids": \[],
-
-&nbsp;   "phishing\_links": \[]
-
-&nbsp; }
-
+  "scam_detection": {
+    "is_scam": true,
+    "confidence": 99,
+    "reason": "Explanation of why this message is a scam"
+  },
+  "engagement_metrics": {
+    "turns": 2,
+    "duration_seconds": 5
+  },
+  "agent_reply": "Human-like response engaging the scammer",
+  "extracted_intelligence": {
+    "bank_accounts": [],
+    "upi_ids": [],
+    "phishing_links": []
+  }
 }
+```
 
-🔐 Environment Variable
+---
 
-Create a .env file:
+## 🔐 Environment Variable
 
+Create a `.env` file in your project root:
 
+```
+GEMINI_API_KEY=your_api_key_here
+```
 
-GEMINI\_API\_KEY=your\_api\_key\_here
+---
 
-▶ Run Locally
+## ▶ Run Locally
 
+```bash
 uvicorn main:app --reload
+```
 
-Open:
+Open in browser:
 
-
-
+```
 http://127.0.0.1:8000/docs
+```
 
-🌍 Production Deployment
+---
 
-Deployable on Render for hackathon submission.
+## 🌍 Production Deployment
 
+This project is deployment-ready and can be hosted on:
 
+- Render
+- Railway
+- Fly.io
+- Any cloud supporting FastAPI
 
-🏆 Hackathon Submission
+---
+
+## 🏆 Hackathon Submission
 
 Built for:
 
+**Agentic Honey-Pot for Scam Detection & Intelligence Extraction**
 
+An AI-driven system that:
+- Detects scam intent
+- Engages scammers autonomously
+- Extracts actionable fraud intelligence
+- Tracks engagement metrics
+- Returns structured intelligence output
 
-Agentic Honey-Pot for Scam Detection \& Intelligence Extraction
+---
+
+## 📂 Project Structure
+
+```
+fraud_ai/
+│── main.py
+│── agent.py
+│── scam_logic.py
+│── intelligence.py
+│── memory.py
+│── requirements.txt
+│── .env
+│── .gitignore
+│── README.md
+```
+
+---
+
+## 👩‍💻 Author
+
+Vijayalakshmi Indhuja
 
