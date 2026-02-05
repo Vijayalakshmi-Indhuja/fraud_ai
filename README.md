@@ -134,5 +134,5 @@ fraud_ai/
 
 ## 👩‍💻 Author
 
-Vijayalakshmi Indhuja
+Vijayalakshmi
 
