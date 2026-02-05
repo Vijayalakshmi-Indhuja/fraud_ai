@@ -13,9 +13,9 @@ You are a scam detection AI.
 Analyze the message below and respond strictly in JSON format:
 
 {{
-    "is_scam": true/false,
-    "confidence": percentage number,
-    "reason": "short explanation"
+  "is_scam": true or false,
+  "confidence": percentage number,
+  "reason": "short explanation"
 }}
 
 Message:
@@ -23,13 +23,16 @@ Message:
 """
 
         response = client.models.generate_content(
-            model="gemini-1.5-flash",
-            contents=prompt,
+            model="gemini-1.0-pro",   # ✅ WORKING MODEL
+            contents=prompt
         )
 
-        text_output = response.text.strip()
+        text = response.text.strip()
 
-        return json.loads(text_output)
+        # Clean markdown if Gemini wraps it
+        text = text.replace("```json", "").replace("```", "").strip()
+
+        return json.loads(text)
 
     except Exception as e:
         return {
