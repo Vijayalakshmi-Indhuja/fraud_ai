@@ -2,9 +2,8 @@ import os
 import json
 from google import genai
 
-# Create Gemini client using API key from Render environment
+# Create Gemini client
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-
 
 def analyze_message(message: str):
     try:
@@ -25,12 +24,12 @@ Message:
 
         response = client.models.generate_content(
             model="gemini-1.5-flash",
-            contents=prompt
+            contents=prompt,
         )
 
-        clean_text = response.text.strip()
+        text_output = response.text.strip()
 
-        return json.loads(clean_text)
+        return json.loads(text_output)
 
     except Exception as e:
         return {
