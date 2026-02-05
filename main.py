@@ -16,7 +16,22 @@ GUVI_SECRET = os.getenv("GUVI_SECRET_KEY", "guvi-secret-key")
 def root():
     return {"message": "Fraud AI Honeypot API is running"}
 
+# -------------------------------
+from fastapi import Header, HTTPException
 
+API_SECRET = "guvi-secret-key"  # same key you type in GUVI popup
+
+
+@app.get("/validate")
+def validate_endpoint(x_api_key: str = Header(None)):
+    if x_api_key != API_SECRET:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    return {
+        "status": "Honeypot API is reachable and authenticated",
+        "service": "Fraud AI Honeypot"
+    }
+# -------------------------------
 # -------------------------------
 # GUVI VALIDATION ENDPOINT
 # -------------------------------
