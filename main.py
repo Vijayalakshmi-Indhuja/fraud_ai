@@ -6,21 +6,40 @@ from memory import ConversationMemory
 from agent import generate_agent_reply
 import time
 
-app = FastAPI()
+app = FastAPI(title="Fraud AI Honeypot API")
 
-# Global memory (single session demo)
+# Global in-memory session (demo purpose)
 memory = ConversationMemory()
 
+
+# -------------------------------
+# Root Endpoint (Prevents 404)
+# -------------------------------
+@app.get("/")
+def home():
+    return {
+        "status": "running",
+        "message": "Fraud AI Honeypot is live 🚀",
+        "docs": "/docs"
+    }
+
+
+# -------------------------------
+# Request Model
+# -------------------------------
 class MessageInput(BaseModel):
     message: str
 
 
+# -------------------------------
+# Main Analyze Endpoint
+# -------------------------------
 @app.post("/analyze")
 def analyze(data: MessageInput):
 
     start_time = time.time()
 
-    # 1️⃣ Detect scam
+    # 1️⃣ Scam Detection
     scam_result = analyze_message(data.message)
 
     # 2️⃣ Store scammer message in memory
@@ -28,7 +47,7 @@ def analyze(data: MessageInput):
 
     agent_reply = None
 
-    # 3️⃣ If scam detected → activate honey-pot agent
+    # 3️⃣ Activate Honey-Pot if Scam
     if scam_result.get("is_scam"):
 
         memory_text = memory.get_history_text()
@@ -38,10 +57,9 @@ def analyze(data: MessageInput):
             data.message
         )
 
-        # Add agent reply to memory
         memory.add("agent", agent_reply)
 
-    # 4️⃣ Extract structured intelligence
+    # 4️⃣ Extract Intelligence
     intelligence = extract_intelligence(data.message)
 
     duration = int(time.time() - start_time)
