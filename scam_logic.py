@@ -15,26 +15,26 @@ if not api_key:
 # Configure Gemini
 genai.configure(api_key=api_key)
 
-# Create model object (IMPORTANT)
-model = genai.GenerativeModel("gemini-1.5-flash")
+# Use supported model
+model = genai.GenerativeModel("gemini-1.0-pro")
 
 
 def analyze_message(message: str):
     try:
         prompt = f"""
-        You are a scam detection AI.
+You are a scam detection AI.
 
-        Analyze the message below and respond strictly in JSON format:
+Analyze the message below and respond STRICTLY in JSON format:
 
-        {{
-            "is_scam": true/false,
-            "confidence": percentage number,
-            "reason": "short explanation"
-        }}
+{{
+    "is_scam": true/false,
+    "confidence": percentage number,
+    "reason": "short explanation"
+}}
 
-        Message:
-        {message}
-        """
+Message:
+{message}
+"""
 
         response = model.generate_content(prompt)
 

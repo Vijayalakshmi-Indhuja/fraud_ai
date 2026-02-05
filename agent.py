@@ -1,12 +1,11 @@
 import os
-import json
 from dotenv import load_dotenv
 import google.generativeai as genai
 
 # Load environment variables
 load_dotenv()
 
-# Get API Key
+# Get API key
 api_key = os.getenv("GEMINI_API_KEY")
 
 if not api_key:
@@ -15,40 +14,30 @@ if not api_key:
 # Configure Gemini
 genai.configure(api_key=api_key)
 
-# Create model object (IMPORTANT)
-model = genai.GenerativeModel("gemini-1.5-flash")
+# Use supported model
+model = genai.GenerativeModel("gemini-1.0-pro")
 
 
-def analyze_message(message: str):
+def generate_agent_reply(memory_text: str, latest_message: str):
     try:
         prompt = f"""
-        You are a scam detection AI.
+You are an AI honeypot agent.
 
-        Analyze the message below and respond strictly in JSON format:
+Your job is to engage scammers naturally and try to extract useful intelligence
+such as bank details, UPI IDs, phishing links, or phone numbers.
 
-        {{
-            "is_scam": true/false,
-            "confidence": percentage number,
-            "reason": "short explanation"
-        }}
+Conversation so far:
+{memory_text}
 
-        Message:
-        {message}
-        """
+Scammer's latest message:
+{latest_message}
+
+Respond naturally as a potential victim.
+"""
 
         response = model.generate_content(prompt)
 
-        clean_text = (
-            response.text.strip()
-            .replace("```json", "")
-            .replace("```", "")
-        )
-
-        return json.loads(clean_text)
+        return response.text.strip()
 
     except Exception as e:
-        return {
-            "is_scam": None,
-            "confidence": 0,
-            "reason": f"Error occurred: {str(e)}"
-        }
+        return f"Error generating agent reply: {str(e)}"
