@@ -2,8 +2,9 @@ import os
 import json
 from google import genai
 
-# Create Gemini client
+# Create Gemini client using API key from Render environment
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
 
 def analyze_message(message: str):
     try:
@@ -13,7 +14,7 @@ You are a scam detection AI.
 Analyze the message below and respond strictly in JSON format:
 
 {{
-    "is_scam": true or false,
+    "is_scam": true/false,
     "confidence": percentage number,
     "reason": "short explanation"
 }}

@@ -3,19 +3,22 @@ from google import genai
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-def generate_agent_reply(memory_text: str, scammer_message: str):
 
+def generate_agent_reply(memory_text: str, scam_message: str):
     try:
         prompt = f"""
-You are an undercover anti-scam AI honeypot agent.
+You are a fraud honeypot AI.
 
-Conversation history:
+You are pretending to be a naive victim.
+
+Conversation so far:
 {memory_text}
 
-Scammer message:
-{scammer_message}
+Scammer just said:
+{scam_message}
 
-Reply in a way that keeps the scammer engaged but does NOT reveal you are an AI.
+Respond in a way that keeps the scammer engaged.
+Be believable. Do NOT reveal you are an AI.
 """
 
         response = client.models.generate_content(
