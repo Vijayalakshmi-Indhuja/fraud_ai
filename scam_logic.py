@@ -1,49 +1,33 @@
 import os
 import json
-from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
 
-# Load environment variables
-load_dotenv()
-
-# Get API key
-api_key = os.getenv("GEMINI_API_KEY")
-
-if not api_key:
-    raise ValueError("GEMINI_API_KEY is not set in environment variables")
-
-# Configure Gemini
-genai.configure(api_key=api_key)
-
-# Initialize model (stable working model)
-model = genai.GenerativeModel("gemini-1.5-flash-latest")
-
+# Create Gemini client
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def analyze_message(message: str):
     try:
         prompt = f"""
-        You are a scam detection AI.
+You are a scam detection AI.
 
-        Analyze the message below and respond STRICTLY in valid JSON format:
+Analyze the message below and respond strictly in JSON format:
 
-        {{
-            "is_scam": true or false,
-            "confidence": number between 0 and 100,
-            "reason": "short explanation"
-        }}
+{{
+    "is_scam": true or false,
+    "confidence": percentage number,
+    "reason": "short explanation"
+}}
 
-        Message:
-        {message}
-        """
+Message:
+{message}
+"""
 
-        response = model.generate_content(prompt)
-
-        # Clean possible markdown formatting
-        clean_text = (
-            response.text.strip()
-            .replace("```json", "")
-            .replace("```", "")
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt
         )
+
+        clean_text = response.text.strip()
 
         return json.loads(clean_text)
 
