@@ -1,48 +1,55 @@
-import google.generativeai as genai
 import os
 import json
 from dotenv import load_dotenv
+import google.generativeai as genai
 
 # Load environment variables
 load_dotenv()
 
-# Configure Gemini API
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+# Get API Key from environment
+api_key = os.getenv("GEMINI_API_KEY")
 
-# Create model instance
-model = genai.GenerativeModel("gemini-1.5-flash")
+if not api_key:
+    raise ValueError("GEMINI_API_KEY is not set in environment variables")
+
+# Configure Gemini
+genai.configure(api_key=api_key)
 
 
 def analyze_message(message: str):
-    prompt = f"""
-You are a scam detection AI.
-
-Analyze the message below and respond strictly in JSON format:
-
-{{
-    "is_scam": true or false,
-    "confidence": percentage number,
-    "reason": "short explanation"
-}}
-
-Message:
-{message}
-"""
-
-    response = model.generate_content(prompt)
-
-    # Clean response text
-    clean_text = (
-        response.text.strip()
-        .replace("```json", "")
-        .replace("```", "")
-    )
-
     try:
+        prompt = f"""
+        You are a scam detection AI.
+
+        Analyze the message below and respond strictly in JSON format:
+
+        {{
+            "is_scam": true/false,
+            "confidence": percentage number,
+            "reason": "short explanation"
+        }}
+
+        Message:
+        {message}
+        """
+
+        response = genai.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt
+        )
+
+        # Clean response text
+        clean_text = (
+            response.text.strip()
+            .replace("```json", "")
+            .replace("```", "")
+        )
+
         return json.loads(clean_text)
-    except:
+
+    except Exception as e:
         return {
-            "is_scam": False,
+            "is_scam": None,
             "confidence": 0,
-            "reason": "Failed to parse Gemini response"
+            "reason": f"Error occurred: {str(e)}"
         }
