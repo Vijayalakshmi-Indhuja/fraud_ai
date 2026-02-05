@@ -1,40 +1,51 @@
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
-from typing import Optional
 import os
 from scam_logic import analyze_message
 
 app = FastAPI()
 
-# Your custom API key for GUVI
-API_SECRET_KEY = os.getenv("GUVI_API_KEY", "guvi-secret-key")
+# Secret key for GUVI validation
+GUVI_SECRET = os.getenv("GUVI_SECRET_KEY", "guvi-secret-key")
 
 
-class MessageRequest(BaseModel):
-    message: Optional[str] = None
-
-
+# -------------------------------
+# Root endpoint
+# -------------------------------
 @app.get("/")
 def root():
     return {"message": "Fraud AI Honeypot API is running"}
 
 
-@app.post("/analyze")
-def analyze(
-    request: Optional[MessageRequest] = None,
-    x_api_key: str = Header(None)
-):
-    # 🔐 API Key Check
-    if x_api_key != API_SECRET_KEY:
+# -------------------------------
+# GUVI VALIDATION ENDPOINT
+# -------------------------------
+@app.get("/validate")
+def validate(x_api_key: str = Header(...)):
+    if x_api_key != GUVI_SECRET:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    # If no message provided (GUVI tester case)
-    if request is None or request.message is None:
-        return {
-            "status": "active",
-            "message": "Honeypot endpoint validated successfully"
-        }
+    return {
+        "status": "active",
+        "service": "Fraud AI Honeypot",
+        "secure": True
+    }
 
-    # Normal analyze logic (Swagger case)
+
+# -------------------------------
+# Scam detection endpoint
+# -------------------------------
+class MessageRequest(BaseModel):
+    message: str
+
+
+@app.post("/analyze")
+def analyze(request: MessageRequest, x_api_key: str = Header(...)):
+    if x_api_key != GUVI_SECRET:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
     result = analyze_message(request.message)
-    return result
+
+    return {
+        "scam_detection": result
+    }
