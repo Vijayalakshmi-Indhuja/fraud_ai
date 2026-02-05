@@ -1,4 +1,4 @@
 fastapi
 uvicorn
 python-dotenv
-google-genai
+google-genai>=0.3.0
