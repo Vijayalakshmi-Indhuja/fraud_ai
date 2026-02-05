@@ -1,34 +1,48 @@
 import google.generativeai as genai
-#from google import genai
 import os
+import json
 from dotenv import load_dotenv
+
+# Load environment variables
 load_dotenv()
 
-# Create Gemini client
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+# Configure Gemini API
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+# Create model instance
+model = genai.GenerativeModel("gemini-1.5-flash")
+
 
 def analyze_message(message: str):
-
     prompt = f"""
-    You are a scam detection AI.
+You are a scam detection AI.
 
-    Analyze the message below and respond in JSON format:
+Analyze the message below and respond strictly in JSON format:
 
-    {{
-        "is_scam": true/false,
-        "confidence": percentage number,
-        "reason": "short explanation"
-    }}
+{{
+    "is_scam": true or false,
+    "confidence": percentage number,
+    "reason": "short explanation"
+}}
 
-    Message:
-    {message}
-    """
+Message:
+{message}
+"""
 
-    response = client.models.generate_content(
-        model="models/gemini-2.5-flash",
-        contents=prompt
+    response = model.generate_content(prompt)
+
+    # Clean response text
+    clean_text = (
+        response.text.strip()
+        .replace("```json", "")
+        .replace("```", "")
     )
 
-    import json
-    clean_text = response.text.strip().replace("```json", "").replace("```", "")
-    return json.loads(clean_text)
+    try:
+        return json.loads(clean_text)
+    except:
+        return {
+            "is_scam": False,
+            "confidence": 0,
+            "reason": "Failed to parse Gemini response"
+        }
