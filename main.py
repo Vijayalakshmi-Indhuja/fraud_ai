@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Header, HTTPException
+
+#from fastapi import FastAPI
 from pydantic import BaseModel
 from scam_logic import analyze_message
 from intelligence import extract_intelligence
@@ -8,14 +10,27 @@ import time
 
 app = FastAPI()
 
+API_KEY = "fraud2026"   # you can choose any word
+
 memory = ConversationMemory()
 
 class MessageInput(BaseModel):
     message: str
 
 @app.get("/")
-def root():
-    return {"message": "Fraud AI Honeypot API is running"}
+def root(x_api_key: str = Header(None)):
+
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    return {
+        "status": "success",
+        "message": "Fraud AI Honeypot API is running"
+    }
+
+#@app.get("/")
+#def root():
+#    return {"message": "Fraud AI Honeypot API is running"}
 
 @app.post("/analyze")
 def analyze(data: MessageInput):
