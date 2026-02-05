@@ -1,31 +1,34 @@
 import google.generativeai as genai
-#from google import genai
 import os
 from dotenv import load_dotenv
+
+# Load environment variables
 load_dotenv()
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+# Configure Gemini
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-def generate_agent_reply(message, history):
+# Create model
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+
+def generate_agent_reply(message: str):
 
     prompt = f"""
-You are a normal human engaging with a scammer.
-Do NOT reveal you are an AI.
-Keep the conversation going.
-Be curious and slightly confused.
+You are pretending to be a normal person responding to a scammer.
+Engage naturally and try to extract useful scam intelligence like:
 
-Conversation history:
-{history}
+- Bank account numbers
+- UPI IDs
+- Phone numbers
+- Links
 
 Scammer message:
 {message}
 
-Reply naturally.
+Respond casually and naturally.
 """
 
-    response = client.models.generate_content(
-        model="models/gemini-2.5-flash",
-        contents=prompt
-    )
+    response = model.generate_content(prompt)
 
-    return response.text
+    return response.text.strip()
